@@ -1,45 +1,39 @@
 import scala.io.Source
 import utils._
 
-
-object Main{
-  def main(args: Array[String]){
+object Main {
+  def main(args: Array[String]) {
     val trSet = Source.fromFile("./data/train_kakaku.txt")
     val teSet = Source.stdin
 
-    try{
+    try {
       val clf = new Classifier(trSet.getLines.toArray)
-      
+
       var ok = 0
-        var ng = 0
+      var ng = 0
 
-      for(line <- teSet.getLines){
-	val expected = if (line.split(" ")(0) == "+1") Pos else Neg
-	val words = line.split(" ").tail
+      for (line <- teSet.getLines) {
+        val expected = if (line.split(" ")(0) == "+1") Pos else Neg
+        val words = line.split(" ").tail
 
-	
-	if (clf.classify(words) == expected){
-	  ok += 1
-	}
-	else{
-	  ng += 1
-	  for (w <- words){
-	    print(w + " ")
-	  }
-	  println()
-	  println(expected + " is Expected")
-	}
-		
-	
+        if (clf.classify(words) == expected) {
+          ok += 1
+        } else {
+          ng += 1
+          for (w <- words) {
+            print(w + " ")
+          }
+          println()
+          println(expected + " is Expected")
+        }
+
       }
-      println(ok + "/" + (ok + ng) + " : " + (ok.toDouble / (ok + ng)) )
+      println(ok + "/" + (ok + ng) + " : " + (ok.toDouble / (ok + ng)))
 
-    }
-    finally{
+    } finally {
       trSet.close
       teSet.close
     }
-
 
   }
 }

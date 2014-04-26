@@ -59,19 +59,15 @@ class SetSuite extends FunSuite {
     assert(expected === actual)
   }
 
+ test("classify1"){
+val train = Array("+1 This pen is very good", "-1 This pen is bad", "-1 Too bad")
+    val clfr = new Classifier(train)
 
-
-  // test("testData"){
-  //   val input = Array("+1 This pen is very good")
-  //   val clfr = new Classifier(input)
-
-  //   val expected = Map[(String, Cls), Double](("This", Pos) -> 0.2, ("pen", Pos) -> 0.2, ("is", Pos) -> 0.2, ("very", Pos) -> 0.2, ("good", Pos)->0.2)
-  //   val actual : Map[(String, Cls), Double] = clfr.probability
-  //   assert(expected === actual)
-  // }
-
-
- // +1 発色 も ” 緑 が 綺麗 ” と か ” 赤 が 鮮やか ” とか 特長 的 な 色 使い は あり ませ ん が 、 地味 に 全 色 を 無難 に 出し て くれる の で 変 な 色 に なっ たり は し ませ ん でし た 。
+    val input = Array("This", "pen", "is", "very", "good")
+    val actual = clfr.classify(input)
+    val expected = Pos
+    assert(expected === actual)
+  }
 
 
 }

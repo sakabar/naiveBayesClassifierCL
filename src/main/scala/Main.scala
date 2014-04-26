@@ -20,14 +20,18 @@ object Main {
           ok += 1
         } else {
           ng += 1
-          for (w <- words) {
-            print(w + " ")
-          }
-          println()
-          println(expected + " is Expected")
+          // for (w <- words) {
+          //   print(w + " ")
+          // }
+          // println()
+          // println(expected + " is Expected")
         }
 
       }
+
+//      for (k <- clf.count.keys) {
+//        println(k)
+//      }
       println(ok + "/" + (ok + ng) + " : " + (ok.toDouble / (ok + ng)))
 
     } finally {

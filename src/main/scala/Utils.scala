@@ -3,16 +3,29 @@ import scala.math._
 
 class Classifier(val testData: Array[String]) {
 
+ private val kig = Array("、", "。", ",", "-", "「", "」", "．", "[", "]", "%", "％", "&", "＆", "【", "】", "『", "』", "（", "）", "!", "！")
+  private val k2 = Array("て", "に", "を", "は", "の", "です", "ます", "が", "ね", "で", "の", "だ")
+  private val pro = Array("わたし", "私", "彼", "あなた")
+ val stop_word =kig ++ k2  ++ pro
+
+
   var count = collection.mutable.Map[(String, Cls), Int]()
 
   for (line <- testData) {
     val cls = if (line.split(" ")(0) == "+1") Pos else Neg
-
+ 
     for (word <- line.split(" ").tail) {
-      if (count.contains(word, cls)) {
-        count(word, cls) += 1
+      if (stop_word.contains(word) || (word exists { _.isDigit })
+          || (word matches "[a-z]+") || (word matches "[A-Z]+")){ 
+        //単語がストップワードだったら何もしない
+        //単語が数字を含むなら何もしない
+        //単語がアルファベットを含むなら何もしない
       } else {
-        count += (word, cls) -> 1
+        if (count.contains(word, cls)) {
+          count(word, cls) += 1
+        } else {
+          count += (word, cls) -> 1
+        }
       }
     }
   }
@@ -28,6 +41,7 @@ class Classifier(val testData: Array[String]) {
       println(line)
     }
   }
+  
   def getProbability(str: String, cls: Cls): Double = {
     if (probability.contains(str, cls)) {
       return probability(str, cls)
@@ -37,22 +51,23 @@ class Classifier(val testData: Array[String]) {
   }
 
   def classify(words: Array[String]): Cls = {
-    val log_Pos_p = log10(0.5)
-    val log_Neg_p = log10(0.5)
-    //Pos縺ｫ縺ｪ繧狗｢ｺ邇�
-    val pos_p = words.map(w => getProbability(w, Pos)).foldLeft(log_Pos_p)(_ + _)
+    //精度下がったorz
+    // val d = cls_num(Pos) + cls_num(Neg)
+    // val log_Pos_p = log10(cls_num(Pos).toDouble / d)
+    // val log_Neg_p = log10(cls_num(Neg).toDouble / d)
+     val log_Pos_p = log10(0.5)
+     val log_Neg_p = log10(0.5)
 
-    //Neg縺ｫ縺ｪ繧狗｢ｺ邇�
+    val pos_p = words.map(w => getProbability(w, Pos)).foldLeft(log_Pos_p)(_ + _)
     val neg_p = words.map(w => getProbability(w, Neg)).foldLeft(log_Neg_p)(_ + _)
-    //val neg_p = words.map().foldL(log_Neg_p)(+)
 
     return if (pos_p >= neg_p) Pos else Neg
 
   }
 }
-// sealed : 蜷御ｸ�繝輔ぃ繧､繝ｫ蜀�〒縺ｮ縺ｿ邯呎価繧定ｨｱ縺�
-// abstract : Cls閾ｪ菴薙′驕ｸ謚櫁い縺ｫ縺ｪ繧九％縺ｨ繧帝亟縺�
-// case object : 蜍晄焔縺ｪ邯呎価繧偵＆縺帙↑縺�
+// sealed : 同一ファイル内でのみ継承可
+// abstract : Cls自体が選択肢の1つになることを防ぐ
+// case object : 勝手な継承を防ぐ
 sealed abstract class Cls
 case object Pos extends Cls
 case object Neg extends Cls

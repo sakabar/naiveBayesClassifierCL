@@ -38,7 +38,7 @@ class SetSuite extends FunSuite {
     val clfr = new Classifier(input)
 
     val expected = 3
-    val actual = clfr.vocab
+    val actual = clfr.vocab_num
     assert(expected === actual)
   }
 

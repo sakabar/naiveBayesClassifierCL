@@ -29,12 +29,13 @@ class Classifier(val testData: Array[String]) {
       }
     }
   }
-
-  val vocab = count.keys.map(k => k._1).toList.distinct.size
+ 
+	val vocab = count.keys.map(k => k._1).toList.distinct
+  val vocab_num = vocab.size
   val cls_num = Map[Cls, Int](Pos -> count.filterKeys(p => p._2 == Pos).values.sum,
     Neg -> count.filterKeys(p => p._2 == Neg).values.sum)
 
-  val probability = count.foldLeft(Map[(String, Cls), Double]())((ans, kv) => ans + (kv._1 -> (kv._2 + 1.0) / (cls_num(kv._1._2) + vocab)))
+  val probability = count.foldLeft(Map[(String, Cls), Double]())((ans, kv) => ans + (kv._1 -> (kv._2 + 1.0) / (cls_num(kv._1._2) + vocab_num)))
 
   def output() {
     for (line <- testData) {
@@ -46,7 +47,7 @@ class Classifier(val testData: Array[String]) {
     if (probability.contains(str, cls)) {
       return probability(str, cls)
     } else {
-      return 1.0 / (cls_num(cls) + vocab)
+      return 1.0 / (cls_num(cls) + vocab_num)
     }
   }
 

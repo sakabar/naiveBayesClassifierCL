@@ -29,6 +29,12 @@ class Classifier(val testData: Array[String]) {
       }
     }
   }
+ //未知語
+ //本当はStringクラスを継承して未知語を特別に扱いたかったが、
+ //Stringクラスを継承することができなかったため失敗
+ val unk = "これは未知語です"
+ count += (unk, Pos) -> 0
+ count += (unk, Neg) -> 0
  
 	val vocab = count.keys.map(k => k._1).toList.distinct
   val vocab_num = vocab.size
@@ -47,7 +53,8 @@ class Classifier(val testData: Array[String]) {
     if (probability.contains(str, cls)) {
       return probability(str, cls)
     } else {
-      return 1.0 / (cls_num(cls) + vocab_num)
+      return probability(unk, cls)
+      // return 1.0 / (cls_num(cls) + vocab_num)
     }
   }
 

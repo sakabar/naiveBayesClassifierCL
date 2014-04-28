@@ -40,9 +40,12 @@ class Classifier(val testData: Array[String]) {
   val vocab_num = vocab.size
   val cls_num = Map[Cls, Int](Pos -> count.filterKeys(p => p._2 == Pos).values.sum,
     Neg -> count.filterKeys(p => p._2 == Neg).values.sum)
-
-  val probability = count.foldLeft(Map[(String, Cls), Double]())((ans, kv) => ans + (kv._1 -> (kv._2 + 1.0) / (cls_num(kv._1._2) + vocab_num)))
-
+    
+private def hoge(cw:Int, cls:Cls) : Double = log10(cw + 1.0) - log10(cls_num(cls) + vocab_num)
+  val probability = count.foldLeft(Map[(String, Cls), Double]()){
+   	case (ans, ((w, cls), cw)) => ans + ((w, cls) -> hoge(cw, cls))
+   }
+ 
   def output() {
     for (line <- testData) {
       println(line)

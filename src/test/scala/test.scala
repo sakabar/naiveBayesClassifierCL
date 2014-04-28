@@ -1,5 +1,6 @@
 import org.scalatest.FunSuite
 import utils._
+import scala.math._
 
 class SetSuite extends FunSuite {
 
@@ -37,7 +38,7 @@ class SetSuite extends FunSuite {
     val input = Array("+1 あ い", "-1 い う")
     val clfr = new Classifier(input)
 
-    val expected = 3
+    val expected = 3 + 1 //未知語を含む 
     val actual = clfr.vocab_num
     assert(expected === actual)
   }
@@ -70,6 +71,18 @@ val train = Array("+1 これ いいね", "-1 これ よくないね")
     val actual = clfr.classify(input)
     val expected = Pos
     assert(expected === actual)
+  }
+
+  test("sum of probability"){
+        val input = Array("+1 あ い", "-1 い う")
+    val clfr = new Classifier(input)
+
+        val sum_pos_p = clfr.probability.filterKeys( p => p._2 == Pos).values.map(loged => pow(10.0, loged)).sum
+		                val sum_neg_p = clfr.probability.filterKeys( p => p._2 == Neg).values.map(loged => pow(10.0, loged)).sum
+        
+             assert(1.0 === sum_pos_p)
+  assert(1.0 === sum_neg_p)        
+ 
   }
 
 

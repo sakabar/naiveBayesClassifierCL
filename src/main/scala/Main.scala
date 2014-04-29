@@ -31,7 +31,7 @@ object Main {
 
       for (k <- clf.count.keys) {
         println(k)
-      } 
+      }
       println(ok + "/" + (ok + ng) + " : " + (ok.toDouble / (ok + ng)))
 
     } finally {

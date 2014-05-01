@@ -6,8 +6,8 @@ class Classifier(val testData: Array[String]) {
   private val kig = Array("、", "。", ",", "-", "「", "」", "．", "[", "]", "%", "％", "&", "＆", "【", "】", "『", "』", "（", "）", "!", "！")
   private val k2 = Array("て", "に", "を", "は", "の", "です", "ます", "が", "ね", "で", "の", "だ")
   private val pro = Array("わたし", "私", "彼", "あなた")
-//  val stop_word = kig ++ k2 ++ pro
-val stop_word = Array("。")
+  //  val stop_word = kig ++ k2 ++ pro
+  val stop_word = Array("。")
 
   var count = collection.mutable.Map[(String, Cls), Int]()
 
@@ -35,26 +35,19 @@ val stop_word = Array("。")
   val unk = "これは未知語です"
   count += (unk, Pos) -> 0
   count += (unk, Neg) -> 0
-  
 
-val vocab_pos = count.filterKeys(p => p._2 == Pos).keys.map(k => k._1).toList.distinct
-val vocab_neg = count.filterKeys(p => p._2 == Neg).keys.map(k => k._1).toList.distinct
-  val vocab_num = Map[Cls, Int](Pos -> vocab_pos.size , Neg -> vocab_neg.size)
-  
+  val vocab_pos = count.filterKeys(p => p._2 == Pos).keys.map(k => k._1).toList.distinct
+  val vocab_neg = count.filterKeys(p => p._2 == Neg).keys.map(k => k._1).toList.distinct
+  val vocab_num = Map[Cls, Int](Pos -> vocab_pos.size, Neg -> vocab_neg.size)
+
   //val vocab = count.keys.map(k => k._1).toList.distinct
-//  val vocab_num = vocab.size
+  //  val vocab_num = vocab.size
   val cls_num = Map[Cls, Int](Pos -> count.filterKeys(p => p._2 == Pos).values.sum,
     Neg -> count.filterKeys(p => p._2 == Neg).values.sum)
 
   private def hoge(cw: Int, cls: Cls): Double = log10(cw + 1.0) - log10(cls_num(cls) + vocab_num(cls))
   val probability = count.foldLeft(Map[(String, Cls), Double]()) {
     case (ans, ((w, cls), cw)) => ans + ((w, cls) -> hoge(cw, cls))
-  }
-
-  def output() {
-    for (line <- testData) {
-      println(line)
-    }
   }
 
   def getProbability(str: String, cls: Cls): Double = {

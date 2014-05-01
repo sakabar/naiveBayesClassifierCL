@@ -6,4 +6,5 @@
 
 
 
-JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8' sbt run < ./data/test_kakaku.txt
+JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8' sbt run < ./data/test_kakaku.txt \
+  | grep -v "info" | grep -v "success" | tee result.txt
